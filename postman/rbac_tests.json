@@ -1,0 +1,45 @@
+{
+  "info": {
+    "name": "RBAC Test Suite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Test Accès Refusé",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 403\", function() {",
+              "    pm.response.to.have.status(403);",
+              "});",
+              "pm.test(\"Response time is less than 200ms\", function() {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Nouveau Cours\",\n    \"description\": \"Test RBAC\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/courses",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","courses"]
+        }
+      }
+    }
+  ]
+}
