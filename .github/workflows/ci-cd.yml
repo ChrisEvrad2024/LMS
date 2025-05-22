@@ -1,0 +1,42 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        
+    - run: npm ci
+    - run: npm test
+    
+    - name: Run E2E Tests
+      run: |
+        npm install -g newman
+        newman run postman/lms_full_test_suite.json \
+          --env-var "baseUrl=http://localhost:3000" \
+          --reporters cli,junit \
+          --reporter-junit-export test-results.xml
+    
+    - name: Run Load Tests
+      uses: grafana/k6-action@v0.2.0
+      with:
+        filename: tests/load/k6_test.js
+        
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: npm run build
+    - run: npm run deploy

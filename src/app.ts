@@ -1,45 +1,28 @@
 import express from 'express';
 import helmet from 'helmet';
-import { env } from './config/env';
-import sequelize from './config/database';
-import { errorHandler } from './utils/errorHandler';
-import { logger } from './utils/logger';
-import routes from './routes';
-import { setupAssociations } from './models/associations';
+import cors from 'cors';
+import { i18nMiddleware } from './middleware/i18nMiddleware';
+import { errorMiddleware } from './middleware/errorMiddleware';
+import { loadTranslations } from './utils/i18n';
+import authRoutes from './routes/auth.routes';
+import courseRoutes from './routes/course.routes';
+
+// Initialiser les traductions
+loadTranslations();
 
 const app = express();
 
-// Middleware
+// Middlewares
 app.use(helmet());
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Setup associations
-setupAssociations();
+app.use(i18nMiddleware);
 
 // Routes
-app.use('/api', routes);
+app.use('/api/auth', authRoutes);
+app.use('/api/courses', courseRoutes);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK' });
-});
+// Gestion des erreurs
+app.use(errorMiddleware);
 
-// Error handling
-app.use(errorHandler);
-
-const startServer = async () => {
-  try {
-    await sequelize.authenticate();
-    logger.info('Database connection established');
-
-    app.listen(env.PORT, () => {
-      logger.info(`Server running on port ${env.PORT}`);
-    });
-  } catch (error) {
-    logger.error('Failed to start server:', error);
-    process.exit(1);
-  }
-};
-
-startServer();
+export default app;

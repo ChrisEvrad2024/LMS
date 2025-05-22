@@ -1,0 +1,24 @@
+{
+  "errors": {
+    "1001": "Invalid credentials",
+    "1002": "User already exists",
+    "1003": "Invalid role",
+    "1004": "Passwords are required",
+    "1005": "Account not active",
+    "1006": "User not found",
+    "1007": "Current password incorrect",
+    "1008": "Authentication record not found",
+    "3001": "Course not found",
+    "9001": "System error"
+  },
+  "auth": {
+    "register_success": "Registration successful",
+    "login_success": "Login successful",
+    "password_changed": "Password changed successfully"
+  },
+  "validation": {
+    "email": "Invalid email",
+    "password": "Password must be at least 8 characters",
+    "role": "Invalid role"
+  }
+}

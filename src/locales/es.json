@@ -1,0 +1,24 @@
+{
+  "errors": {
+    "1001": "Credenciales inválidas",
+    "1002": "Usuario ya existe",
+    "1003": "Rol inválido",
+    "1004": "Se requieren contraseñas",
+    "1005": "Cuenta no activada",
+    "1006": "Usuario no encontrado",
+    "1007": "Contraseña actual incorrecta",
+    "1008": "Registro de autenticación no encontrado",
+    "3001": "Curso no encontrado",
+    "9001": "Error del sistema"
+  },
+  "auth": {
+    "register_success": "Registro exitoso",
+    "login_success": "Inicio de sesión exitoso",
+    "password_changed": "Contraseña cambiada con éxito"
+  },
+  "validation": {
+    "email": "Email inválido",
+    "password": "La contraseña debe tener al menos 8 caracteres",
+    "role": "Rol inválido"
+  }
+}

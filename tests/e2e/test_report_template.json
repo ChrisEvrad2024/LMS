@@ -1,0 +1,29 @@
+{
+  "summary": {
+    "totalTests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "startTime": "",
+    "endTime": "",
+    "duration": 0
+  },
+  "testCases": [
+    {
+      "id": "TC-001",
+      "name": "",
+      "description": "",
+      "status": "",
+      "executionTime": 0,
+      "defects": [
+        {
+          "id": "",
+          "description": "",
+          "severity": "",
+          "status": "open"
+        }
+      ]
+    }
+  ],
+  "recommendations": []
+}

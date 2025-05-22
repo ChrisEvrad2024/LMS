@@ -1,0 +1,319 @@
+{
+  "info": {
+    "name": "RBAC Full Test Suite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. ADMIN - Full Access Test",
+      "item": [
+        {
+          "name": "Create Course",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can create course\", function() {",
+                  "    pm.response.to.have.status(201);",
+                  "    pm.expect(pm.response.json().data).to.have.property('id');",
+                  "    pm.collectionVariables.set(\"courseId\", pm.response.json().data.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Advanced Mathematics\",\n    \"description\": \"Course created by admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","courses"]
+            }
+          }
+        },
+        {
+          "name": "Publish Course",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Admin can publish course\", function() {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().data.status).to.eql('PUBLISHED');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"PUBLISHED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","courses","{{courseId}}","status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. INSTRUCTOR - Limited Access Test",
+      "item": [
+        {
+          "name": "Create Module",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Instructor can create module\", function() {",
+                  "    pm.response.to.have.status(201);",
+                  "    pm.expect(pm.response.json().data).to.have.property('id');",
+                  "    pm.collectionVariables.set(\"moduleId\", pm.response.json().data.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Algebra Basics\",\n    \"courseId\": \"{{courseId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/modules",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","modules"]
+            }
+          }
+        },
+        {
+          "name": "Try Publish Course (Should Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Instructor cannot publish course\", function() {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{instructorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"PUBLISHED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","courses","{{courseId}}","status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. STUDENT - Read Only Test",
+      "item": [
+        {
+          "name": "View Published Course",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Student can view published course\", function() {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().data.status).to.eql('PUBLISHED');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","courses","{{courseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Try Create Course (Should Fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Student cannot create course\", function() {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Illegal Course\",\n    \"description\": \"Should fail\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","courses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. CONTENT_MANAGER - Content Test",
+      "item": [
+        {
+          "name": "Create Lesson",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Content manager can create lesson\", function() {",
+                  "    pm.response.to.have.status(201);",
+                  "    pm.expect(pm.response.json().data).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contentManagerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Introduction to Algebra\",\n    \"moduleId\": \"{{moduleId}}\",\n    \"content\": \"Basic algebraic concepts...\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lessons",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","lessons"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "description": "Set after admin login"
+    },
+    {
+      "key": "instructorToken",
+      "value": "",
+      "description": "Set after instructor login"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "description": "Set after student login"
+    },
+    {
+      "key": "contentManagerToken",
+      "value": "",
+      "description": "Set after content manager login"
+    }
+  ]
+}

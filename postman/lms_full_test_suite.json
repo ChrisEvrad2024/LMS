@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "LMS Full Test Suite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication Tests",
+      "item": [
+        {
+          "name": "1.1 Register - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Response contains token\", function() {",
+                  "    pm.expect(pm.response.json().data.token).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "fr"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test_teacher_{{$timestamp}}@example.com\",\n    \"password\": \"Test1234\",\n    \"roleType\": \"TEACHER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","auth","register"]
+            }
+          }
+        },
+        {
+          "name": "1.2 Register - Invalid Role (Negative)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test(\"Error message matches\", function() {",
+                  "    pm.expect(pm.response.json().error.message).to.equal(\"Rôle invalide\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept-Language",
+                "value": "fr"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test_invalid@example.com\",\n    \"password\": \"Test1234\",\n    \"roleType\": \"INVALID_ROLE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","auth","register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Course Management Tests",
+      "item": [
+        {
+          "name": "2.1 Create Course - Teacher Role",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const loginRequest = {",
+                  "    url: pm.variables.get(\"baseUrl\") + '/api/auth/login',",
+                  "    method: 'POST',",
+                  "    header: {",
+                  "        'Content-Type': 'application/json',",
+                  "        'Accept-Language': 'en'",
+                  "    },",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            email: 'teacher@example.com',",
+                  "            password: 'teacher123'",
+                  "        })",
+                  "    }",
+                  "};",
+                  "",
+                  "pm.sendRequest(loginRequest, (err, res) => {",
+                  "    pm.variables.set(\"teacherToken\", res.json().data.token);",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test(\"Course created successfully\", function() {",
+                  "    pm.expect(pm.response.json().data.title).to.equal(\"Advanced Mathematics\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{teacherToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Advanced Mathematics\",\n    \"description\": \"Course covering advanced topics\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","courses"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
