@@ -1,10 +1,7 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
 import { Role } from './Role.model';
 
-@Table({ 
-  tableName: 'permissions',
-  paranoid: true // Soft delete
-})
+@Table({ tableName: 'permissions' })
 export class Permission extends Model {
   @Column({
     type: DataType.UUID,
@@ -16,39 +13,9 @@ export class Permission extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    validate: {
-      isIn: [['course', 'user', 'content', 'system']]
-    }
+    unique: true
   })
-  resource: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  })
-  create: boolean;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  })
-  read: boolean;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  })
-  update: boolean;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: false,
-    defaultValue: false
-  })
-  delete: boolean;
+  name: string;
 
   @ForeignKey(() => Role)
   @Column({
@@ -56,7 +23,4 @@ export class Permission extends Model {
     allowNull: false
   })
   roleId: string;
-
-  @BelongsTo(() => Role)
-  role: Role;
 }

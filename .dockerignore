@@ -4,3 +4,11 @@ dist
 .env
 .DS_Store
 docker-compose.override.yml
+.git
+.gitignore
+*.md
+*.sql
+test
+coverage
+.idea
+.vscode

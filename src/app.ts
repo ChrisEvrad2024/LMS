@@ -1,28 +1,28 @@
 import express from 'express';
-import helmet from 'helmet';
 import cors from 'cors';
+import { connectRedis } from './config/redis';
+import { requestLogger } from './middleware/requestLogger';
+import { rateLimiter } from './middleware/rateLimiter';
+import { securityHeaders } from './middleware/securityHeaders';
 import { i18nMiddleware } from './middleware/i18nMiddleware';
 import { errorMiddleware } from './middleware/errorMiddleware';
-import { loadTranslations } from './utils/i18n';
-import authRoutes from './routes/auth.routes';
-import courseRoutes from './routes/course.routes';
-
-// Initialiser les traductions
-loadTranslations();
 
 const app = express();
 
+// Initialize Redis
+connectRedis();
+
 // Middlewares
-app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(securityHeaders);
+app.use(requestLogger);
+app.use(rateLimiter);
 app.use(i18nMiddleware);
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/courses', courseRoutes);
+// Routes would be added here
 
-// Gestion des erreurs
+// Error handling (must be last)
 app.use(errorMiddleware);
 
 export default app;

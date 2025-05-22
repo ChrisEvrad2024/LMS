@@ -4,12 +4,14 @@ import { Role } from './rbac/Role.model';
 import { Permission } from './rbac/Permission.model';
 
 export function setupAssociations() {
-  User.hasMany(Authentication, { foreignKey: 'userId' });
-  Authentication.belongsTo(User, { foreignKey: 'userId' });
+  // User associations
+  User.hasMany(Authentication, { foreignKey: 'userId', as: 'authentications' });
+  Authentication.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-  User.hasMany(Role, { foreignKey: 'userId' });
-  Role.belongsTo(User, { foreignKey: 'userId' });
+  User.hasMany(Role, { foreignKey: 'userId', as: 'roles' });
+  Role.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-  Role.hasMany(Permission, { foreignKey: 'roleId' });
-  Permission.belongsTo(Role, { foreignKey: 'roleId' });
+  // Role associations
+  Role.hasMany(Permission, { foreignKey: 'roleId', as: 'permissions' });
+  Permission.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
 }
