@@ -1,38 +1,40 @@
 # LMS Backend System
 
-## Features
-- Role-Based Access Control (RBAC)
-- Course Management
-- Redis Caching
-- Rate Limiting
-- Request Logging
-- Security Headers
-- Internationalization (i18n)
+## Commandes NPM
 
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- MySQL 8.0
-- Redis
-
-### Installation
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables (see `.env.example`)
-4. Run migrations: `npm run migrate`
-5. Start the server: `npm start`
-
-### Testing
-Run integration tests:
+### Développement
 ```bash
-npm test
+npm install          # Installer les dépendances
+npm start            # Démarrer le serveur (mode production)
+npm run dev          # Démarrer en mode développement (avec nodemon)
 ```
 
-## API Documentation
-Access Swagger UI at `/api-docs` when the server is running
-
-## Deployment
+### Tests
 ```bash
-docker-compose up --build
+npm test             # Exécuter tous les tests
+npm run test:watch   # Exécuter les tests en mode watch
+npm run test:cov     # Exécuter les tests avec couverture
+npm run test:debug   # Exécuter les tests en mode debug
 ```
+
+### Base de données
+```bash
+npm run db:migrate   # Exécuter les migrations
+npm run db:reset     # Réinitialiser la base de données
+npm run db:seed      # Peupler la base avec des données de test
+```
+
+### Linting & Formatage
+```bash
+npm run lint         # Vérifier le code avec ESLint
+npm run format       # Formater le code avec Prettier
+```
+
+### CI/CD
+```bash
+npm run build        # Builder le projet
+npm run ci           # Commande pour CI (test + build)
+```
+
+## Variables d'environnement
+Créez un fichier `.env` basé sur `.env.example` avant de démarrer.
