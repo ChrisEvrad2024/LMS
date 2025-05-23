@@ -1,13 +1,25 @@
+import 'reflect-metadata';
+import { AppDataSource } from '../config/database';
+import { redisClient } from '../config/redis';
 import dotenv from 'dotenv';
-dotenv.config();
 
-// Setup global test hooks
+dotenv.config({ path: '.env.test' });
+
 beforeAll(async () => {
-  // Initialize test database if needed
+  try {
+    await AppDataSource.initialize();
+    await redisClient.connect();
+  } catch (error) {
+    console.error('Test setup failed:', error);
+    process.exit(1);
+  }
 });
 
 afterAll(async () => {
-  // Cleanup test database
+  try {
+    await redisClient.quit();
+    await AppDataSource.destroy();
+  } catch (error) {
+    console.error('Test teardown failed:', error);
+  }
 });
-
-process.env.NODE_ENV = 'test';

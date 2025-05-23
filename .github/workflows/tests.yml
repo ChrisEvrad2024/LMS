@@ -11,9 +11,15 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
-      - run: npm test -- --config=jest.config.ts
+      - run: npm test -- --config=jest.config.ts --verbose --detectOpenHandles --forceExit
         env:
           NODE_ENV: test
           DATABASE_URL: ${{ secrets.TEST_DB_URL }}
           JWT_SECRET: test_jwt_secret
           REDIS_URL: redis://localhost:6379
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-test-results
+          path: test-results.json
