@@ -1,5 +1,11 @@
 {
   "name": "lms-backend",
+  "type": "module",
+  "scripts": {
+    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest",
+    "test:watch": "set NODE_OPTIONS=--experimental-vm-modules && jest --watch",
+    "test:coverage": "set NODE_OPTIONS=--experimental-vm-modules && jest --coverage"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "sequelize": "^6.37.1",
