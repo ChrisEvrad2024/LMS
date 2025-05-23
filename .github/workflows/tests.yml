@@ -11,7 +11,9 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
-      - run: npm test
+      - run: npm test -- --config=jest.config.ts
         env:
           NODE_ENV: test
           DATABASE_URL: ${{ secrets.TEST_DB_URL }}
+          JWT_SECRET: test_jwt_secret
+          REDIS_URL: redis://localhost:6379

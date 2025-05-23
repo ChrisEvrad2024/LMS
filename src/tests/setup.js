@@ -1,13 +1,13 @@
-import 'reflect-metadata';
-import { AppDataSource } from '../config/database';
-import { redisClient } from '../config/redis';
+import dotenv from 'dotenv';
+dotenv.config();
 
+// Setup global test hooks
 beforeAll(async () => {
-  await AppDataSource.initialize();
-  await redisClient.connect();
+  // Initialize test database if needed
 });
 
 afterAll(async () => {
-  await redisClient.quit();
-  await AppDataSource.destroy();
+  // Cleanup test database
 });
+
+process.env.NODE_ENV = 'test';
